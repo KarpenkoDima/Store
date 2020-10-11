@@ -2,7 +2,15 @@
 
 namespace Store
 {
-    public class Class1
+    public class Book
     {
+        //public string title;
+        public string Title { get; }
+        public int Id { get; }
+        public Book(int id, string title)
+        {
+            this.Id = id;
+            this.Title = title;
+        }
     }
 }
