@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Store;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace store
 {
-    interface IBookRepository
+    public interface IBookRepository
     {
+        Book[] GetByTitle(string titlePart);
     }
 }
