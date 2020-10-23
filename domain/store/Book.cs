@@ -11,12 +11,16 @@ namespace Store
         //public string title;
         public string Title { get; }
         public int Id { get; }
-        public Book(int id, string isbn, string authors, string title)
+        public string Desscription { get; }
+        public decimal Price { get; }
+        public Book(int id, string isbn, string authors, string title, string description, decimal price)
         {
             this.Id = id;
             this.ISBN = isbn;
             this.Author = authors;
             this.Title = title;
+            this.Desscription = description;
+            this.Price = price;
         }
         internal static bool IsIsbn(string query)
         {
