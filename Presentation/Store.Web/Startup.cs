@@ -26,6 +26,15 @@ namespace Store.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            // for cart
+            services.AddDistributedMemoryCache();
+            services.AddSession(option =>
+            {
+                option.IdleTimeout = TimeSpan.FromMinutes(20);
+                option.Cookie.HttpOnly = true;
+                option.Cookie.IsEssential = true;
+            });
+
             services.AddSingleton<IBookRepository, BookRepository>();
             services.AddSingleton<BookService>();
         }
@@ -49,6 +58,8 @@ namespace Store.Web
             app.UseRouting();
 
             app.UseAuthorization();
+            // cart
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

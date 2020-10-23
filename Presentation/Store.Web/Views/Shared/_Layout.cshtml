@@ -17,6 +17,24 @@
                 <input class="form-control mr-sm-2" type="search" name="query" placeholder="author name"/>
                 <button class="btn btn-outline-success my-2 my-sn-0" type="submit">Search</button>
             </form>
+            <span class="navbar-text ml-auto">
+                @{ 
+                    Cart cart;
+                    if (!Context.Session.TryGetCart(out cart))
+                    {
+                        cart = new Cart();
+                    }
+                    // ... 
+                    if (cart.Items.Count == 0)
+                    {
+                        @: Cart is empty
+                    }
+                    else
+                    {
+                        @:Goods @cart.Items.Values.Count at amount @cart.Amount
+                    }
+                }
+            </span>
         </nav>
     </header>
     <div class="container">
