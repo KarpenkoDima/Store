@@ -1,0 +1,41 @@
+﻿@model OrderModel
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h1>Cart</h1>
+
+<table class="table table-sm table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Authors</th>
+            <th scope="col">Title</th>
+            <th scope="col">Price of Unit</th>
+            <th scope="col">Count</th>
+            <th scope="col">Total Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Items.Length; i++)
+        {
+        <tr>
+            <td class="text-left">@(i+1)</td>
+            <td>@Model.Items[i].Author</td>
+            <td class="text-left">@Model.Items[i].Title</td>
+            <td class="text-center">@Model.Items[i].Price</td>
+            <td class="text-center">@Model.Items[i].Count</td>
+            <td class="text-right">@(Model.Items[i].Price * @Model.Items[i].Count)</td>
+        </tr>
+        }
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-right list-inline">AmountL:</td>
+        <td class="text-right">@Model.TotalCount</td>
+        <td class="text-right">@Model.TotalPrice</td>
+
+</tbody>
+    
+</table>

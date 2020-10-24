@@ -1,6 +1,7 @@
 ﻿using store;
 using Store;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace StoreMemory
@@ -12,6 +13,15 @@ namespace StoreMemory
             new Book(2, "ISBN 11111-11111", "M. Fowler", "Refactoring", "", 12.12m), 
             new Book(3, "ISBN 09876-54321", "B. Kernigan", "C Programming Language", "", 21.34m) 
         };
+
+        public Book[] GetAllByIds(IEnumerable<int> bookIds)
+        {
+            var foundBooks = (from book in books
+                             join bookId in bookIds on book.Id equals bookId
+                             select book).ToArray();
+
+            return books.Where(book => bookIds.Contains(book.Id)).ToArray();
+        }
 
         public Book[] GetAllByISBN(string isbn)
         {
