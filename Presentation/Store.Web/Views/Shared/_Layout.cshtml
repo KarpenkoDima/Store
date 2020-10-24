@@ -18,21 +18,17 @@
                 <button class="btn btn-outline-success my-2 my-sn-0" type="submit">Search</button>
             </form>
             <span class="navbar-text ml-auto">
-                @{ 
+                @{
                     Cart cart;
-                    if (!Context.Session.TryGetCart(out cart))
+                    if (Context.Session.TryGetCart(out cart) && @cart.TotalCount > 0)
                     {
-                        cart = new Cart();
-                    }
-                    // ... 
-                    if (cart.Items.Count == 0)
-                    {
-                        @: Cart is empty
+                        @:Goods @cart.TotalCount at amount @cart.TotalPrice
                     }
                     else
-                    {
-                        @:Goods @cart.Items.Values.Count at amount @cart.Amount
+                    { 
+                        @: Cart is empty
                     }
+                    
                 }
             </span>
         </nav>
