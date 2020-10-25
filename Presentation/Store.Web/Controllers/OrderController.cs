@@ -137,7 +137,7 @@ namespace Store.Web.Controllers
             cart.TotalPrice = order.TotalPrice;
             HttpContext.Session.Set(cart);
 
-            return RedirectToAction("Index", "Book", new { id = bookId });
+            return RedirectToAction("Index", "Order");
         }
     }
 }
