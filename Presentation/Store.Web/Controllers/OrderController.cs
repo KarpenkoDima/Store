@@ -1,9 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using store;
+using store.Messages;
+using Store.Web.Model;
 using Store.Web.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Text.RegularExpressions;
 
 namespace Store.Web.Controllers
 {
@@ -11,12 +17,15 @@ namespace Store.Web.Controllers
     {
         private readonly IBookRepository bookRepository;
         private readonly IOrderRepository orderRepository;
-        public OrderController(IBookRepository bookRepository, IOrderRepository orderRepository)
+        private readonly INotificationService notificationService;
+        public OrderController(IBookRepository bookRepository, IOrderRepository orderRepository, INotificationService notificationService)
         {
             this.bookRepository = bookRepository;
             this.orderRepository = orderRepository;
+            this.notificationService = notificationService;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             if (HttpContext.Session.TryGetCart(out Cart cart))
@@ -73,6 +82,7 @@ namespace Store.Web.Controllers
             return RedirectToAction("Index", "Book", new { id = bookId });
         }
 
+        [HttpPost]
         public IActionResult AddItem(int bookId, int count = 1)
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
@@ -138,6 +148,72 @@ namespace Store.Web.Controllers
             HttpContext.Session.Set(cart);
 
             return RedirectToAction("Index", "Order");
+        }
+        [HttpPost]
+        public IActionResult SendConfirmationCode(int orderId, string cellPhone)
+        {
+            var order = orderRepository.GetById(orderId);
+            var model = Map(order);
+
+            if (!IsValidCellPhone(cellPhone))
+            {
+                model.Errors["cellPhone"] = "Phone number must been in fromat +381234567890";
+                return View("Index", model);
+            }
+            int code = 1111;
+            HttpContext.Session.SetInt32(cellPhone, code);
+            notificationService.SendConfirmationCode(cellPhone, code);
+
+            return View("Confirmation",
+                new ConfirmatiopnModel
+                {
+                    OrderId = orderId,
+                    CellPhone = cellPhone
+                });
+        }
+
+        private bool IsValidCellPhone(string cellPhone)
+        {
+            if (cellPhone == null)
+            {
+                return false;
+            }
+
+            cellPhone = cellPhone.Replace(" ", "").Replace("-", "");
+            return Regex.IsMatch(cellPhone, @"^\+?\d{12}$");
+        }
+        [HttpPost]
+        public IActionResult StartDelivery(int orderId, string cellPhone, int codeConfirm)
+        {
+            int? storedCode = HttpContext.Session.GetInt32(cellPhone);
+            if (storedCode == null)
+            {
+                return View("Confirmation", new ConfirmatiopnModel
+                {
+                    OrderId = orderId,
+                    CellPhone = cellPhone,
+                    Errors = new Dictionary<string, string>
+                    {
+                        {"code", "Empty confirm code. Repeat again" }
+                    }
+                });
+            }
+
+            if (storedCode != codeConfirm)
+            {
+                return View("Confirmation",
+                    new ConfirmatiopnModel
+                    {
+                        OrderId = orderId,
+                        CellPhone = cellPhone,
+                        Errors = new Dictionary<string, string>
+                        {
+                            {"code", " is defferent from the one sent" }
+                        }
+                    });
+            }
+
+            return View();
         }
     }
 }
