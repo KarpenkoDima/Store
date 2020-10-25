@@ -73,7 +73,7 @@ namespace Store.Web.Controllers
             return RedirectToAction("Index", "Book", new { id = bookId });
         }
 
-        public IActionResult AddItem(int bookId, int count)
+        public IActionResult AddItem(int bookId, int count = 1)
         {
             (Order order, Cart cart) = GetOrCreateOrderAndCart();
             var book = bookRepository.GetById(bookId);
