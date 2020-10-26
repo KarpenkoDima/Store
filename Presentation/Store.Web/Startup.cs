@@ -9,7 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using store;
+using store.Contractors;
 using store.Messages;
+using Store.Contractors;
 using StoreMemory;
 
 namespace Store.Web
@@ -40,6 +42,8 @@ namespace Store.Web
             services.AddSingleton<BookService>();
             services.AddSingleton<IOrderRepository, OrderRepository>();
             services.AddSingleton<INotificationService, DebugNotificationService>();
+            services.AddSingleton<IDeliveryService, PostamateDeliveryService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
