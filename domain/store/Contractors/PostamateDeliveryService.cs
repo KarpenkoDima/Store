@@ -1,6 +1,7 @@
 ﻿using Store.Contractors;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -37,7 +38,28 @@ namespace store.Contractors
         };
         public string Code => "Postamate";
         public string Title => "Delivery from Moscow to St.Petersberg";
-       
+
+        public OrderDelivery CreateDelivery(Form formDelivery)
+        {
+            if (formDelivery.Code != Code || !formDelivery.IsFinal)
+            {
+                throw new InvalidOperationException("Invalid form.");
+            }
+            var cityId = formDelivery.Fields.Single(field => field.Name == "city").Value;
+            var cityName = cities[cityId];
+            var postamateId = formDelivery.Fields.Single(field => field.Name == "postamate").Value;
+            var postamateName = postamates[cityId][postamateId];
+            var parameters = new Dictionary<string, string>
+           {
+               {nameof(cityId), cityId },
+               {nameof(cityName), cityName },
+               {nameof(postamateId), postamateId },
+               {nameof(postamateName), postamateName }
+           };
+            var description = $"City {cityName}\nPostamate: {postamateName}";
+            return new OrderDelivery(Code, description, parameters, 150m);
+        }
+
         public Form CreateForm(Order order)
         {
             if (order == null)
@@ -49,7 +71,7 @@ namespace store.Contractors
                 new SelectionField("City","city","1",cities)
             }) ; 
         }      
-        public Form MoveNext(int orderId, int step, IReadOnlyDictionary<string, string> values)
+        public Form MoveNextForm(int orderId, int step, IReadOnlyDictionary<string, string> values)
         {
             if (step == 1)
             {

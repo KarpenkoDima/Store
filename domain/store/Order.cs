@@ -1,4 +1,5 @@
-﻿using Store;
+﻿using store.store;
+using Store;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,6 +11,9 @@ namespace store
     public class Order
     {
         private List<OrderItem> items;
+
+        public string CellPhone { get; set; }
+
         public int Id { get; }
         public IReadOnlyCollection<OrderItem> Items
         {
@@ -18,8 +22,10 @@ namespace store
                 return items;
             }
         }
+        public OrderDelivery Delivery { get; set; }
+        public OrderPayment Payment { get; set; }
         public int TotalCount =>  items.Sum(item=> item.Count);
-        public decimal TotalPrice => items.Sum(item => item.Price * item.Count);        
+        public decimal TotalPrice => items.Sum(item => item.Price * item.Count) + (Delivery?.Amount ?? 0m);
         public Order(int id, IEnumerable<OrderItem> items)
         {
             if (items == null)

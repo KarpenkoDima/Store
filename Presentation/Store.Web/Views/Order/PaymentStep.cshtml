@@ -1,11 +1,11 @@
 ﻿@model Form
 @{
-    ViewData["Title"] = "Delivery Settings";
+    ViewData["Title"] = "Payment Settings";
 }
 
-<h1>Delivery Settings</h1>
+<h1>Payment Settings</h1>
 
-<form action="@Url.Action("NextDelivery")" method="post">
+<form action="@Url.Action(nameof(Store.Web.Controllers.OrderController.NextPayment))" method="post">
     <input type="hidden" name="id" value="@Model.OrderId" />
     <input type="hidden" name="uniqueCode" value="@Model.Code" />
     <input type="hidden" name="step" value="@Model.Step" />
@@ -26,7 +26,7 @@
                     }
                 </select>
             </div>
-           <button class="btn btn-success" type="submit">Next</button>
+
         }
-    }
+    } <button class="btn btn-success" type="submit">Next</button>
 </form>
