@@ -12,6 +12,8 @@ using store;
 using store.Contractors;
 using store.Messages;
 using Store.Contractors;
+using Store.Web.Contractors;
+using Store.YandexKassa;
 using StoreMemory;
 
 namespace Store.Web
@@ -43,7 +45,10 @@ namespace Store.Web
             services.AddSingleton<IOrderRepository, OrderRepository>();
             services.AddSingleton<INotificationService, DebugNotificationService>();
             services.AddSingleton<IDeliveryService, PostamateDeliveryService>();
-
+            services.AddSingleton<IPaymentService, CashPaymentService>();
+            services.AddSingleton<IPaymentService, YandexKassaPaymentService>();
+            services.AddSingleton<IWebContractorService, YandexKassaPaymentService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +78,10 @@ namespace Store.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapAreaControllerRoute(
+                    name: "yandex.kassa", "YandexKassa", 
+                    pattern: "YandexKassa/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

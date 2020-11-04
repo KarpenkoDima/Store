@@ -46,7 +46,8 @@
 </tbody>
     
 </table>
-
+@if (Model.Items.Length > 0)
+{
 <form action="@Url.Action("SendConfirmationCode")" method="post">
     <input type="hidden" name="orderId" value="@Model.Id" />
     <div class="form-control">
@@ -59,3 +60,4 @@
     </div>
     <button type="submit" class="tbn btn-success">Send Code</button>
 </form>
+}
